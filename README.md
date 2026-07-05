@@ -31,15 +31,17 @@ with a fully working admin panel to manage everything in real time.
 | Backend | [Supabase](https://supabase.com) — Postgres Database, Auth, Storage |
 | Hosting | Netlify / Vercel (static hosting) |
 
-No Node.js, no bundler, no `npm install` — it's a single static HTML file
-that talks directly to Supabase's REST API from the browser.
+No Node.js, no bundler, no `npm install` — it's plain static HTML/CSS/JS
+files that talk directly to Supabase's REST API from the browser.
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-├── index.html      # entire site — markup, styles, and app logic
+├── index.html      # page markup (HTML structure only)
+├── style.css       # all styling
+├── script.js       # all app logic — Supabase calls, admin panel, rendering
 └── README.md       # you are here
 ```
 
@@ -59,7 +61,7 @@ and Row Level Security policies. Full SQL scripts and step-by-step
 instructions are in **[`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md)**.
 
 ### 3. Add your Supabase credentials
-Open `index.html`, find these lines near the top of the `<script>` tag:
+Open `script.js`, find these lines near the top:
 ```js
 const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
 const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
@@ -93,7 +95,8 @@ changes reflect to all visitors instantly.
 
 ## 📦 Deployment
 
-This is a static site — deploy the `index.html` as-is to any static host:
+This is a static site — deploy `index.html`, `style.css`, and `script.js`
+together (same folder) to any static host:
 
 - **Netlify** — drag-and-drop, or connect this GitHub repo for
   auto-deploy on every push
