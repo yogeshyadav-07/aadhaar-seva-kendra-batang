@@ -1,282 +1,117 @@
-# CSC Centre Website — Supabase Backend Setup (Full Migration)
+# 🏢 Aadhaar Seva Kendra — Batang, Raipur
 
-Ab website **poori tarah Supabase-backed** hai. Admin Panel me jo bhi change
-hoga (Services, Notices, Documents, Hero, Popup, Ticker, Payment/QR,
-Contact) — wo turant sabhi customers ko dikhega, chahe wo kisi bhi
-browser/phone se site khol rahe hon. Design bilkul same hai, sirf backend
-badla hai.
+A digital presence for a Common Service Centre (CSC) in Batang, Raipur,
+Chhattisgarh — built to help a local CSC operator showcase government
+services, publish notices, and share downloadable forms/documents online,
+with a fully working admin panel to manage everything in real time.
 
-**Sirf ye 2 cheezein LocalStorage me hain** (jaanbujh kar — ye per-device UI
-settings hain, admin-editable "content" nahi):
-- Dark/Light theme (har visitor apni pasand khud set karta hai)
-- Visitor counter (sirf ek local dikhawa counter, real analytics nahi)
-
-Baaki sab kuch — Services, Notices, Documents, Hero text, Popup, Ticker,
-Payment/QR, Contact info — **Supabase database + storage** me hai.
+**Live site:** _add your deployed URL here_
 
 ---
 
-## Step 1 — Supabase Project Banayein
+## ✨ Features
 
-1. [supabase.com](https://supabase.com) pe sign up / login karein.
-2. **New Project** → naam do (jaise `csc-batang`), password set karein,
-   region **South Asia (Mumbai)** rakhein.
-3. 1-2 minute me project ready ho jayega.
+- 📋 **Services listing** — government services offered, required documents, and downloadable application forms
+- 📢 **Notices board** — admin-published announcements shown to all visitors in real time
+- 📄 **Documents/Forms** — PDF/image uploads that visitors can view & download
+- 💳 **Payment info** — UPI ID + QR code for service payments
+- 📞 **Contact section** — phone, WhatsApp, email, address, office hours
+- 🌗 **Dark/Light theme** toggle
+- 🌐 **Multi-language hero** (Hindi / English / Chhattisgarhi) for the landing banner
+- 🔐 **Admin Panel** — secure, login-protected dashboard to manage all of the above
+- 📱 Fully responsive, mobile-first design
 
 ---
 
-## Step 2 — Tables, Buckets aur RLS Policies (SQL)
+## 🛠️ Tech Stack
 
-Dashboard me **SQL Editor** → **New query** → poora neeche wala SQL paste
-karke **Run** karein:
+| Layer | Technology |
+|---|---|
+| Frontend | Vanilla HTML, CSS, JavaScript (no framework, no build step) |
+| Backend | [Supabase](https://supabase.com) — Postgres Database, Auth, Storage |
+| Hosting | Netlify / Vercel (static hosting) |
 
-```sql
--- Extension (agar pehle se enabled na ho)
-create extension if not exists pgcrypto;
+No Node.js, no bundler, no `npm install` — it's a single static HTML file
+that talks directly to Supabase's REST API from the browser.
 
--- ═══════════ SERVICES TABLE ═══════════
-create table services (
-  id uuid primary key default gen_random_uuid(),
-  icon text default '📋',
-  name text not null,
-  description text,
-  doc_required text,
-  form_file_url text,
-  form_file_path text,
-  sort_order integer default 0,
-  created_at timestamptz not null default now()
-);
+---
 
-alter table services enable row level security;
+## 🗂️ Project Structure
 
-create policy "public_read_services"
-  on services for select to anon, authenticated using (true);
-
-create policy "authenticated_write_services_insert"
-  on services for insert to authenticated with check (true);
-
-create policy "authenticated_write_services_update"
-  on services for update to authenticated using (true);
-
-create policy "authenticated_write_services_delete"
-  on services for delete to authenticated using (true);
-
-
--- ═══════════ NOTICES TABLE ═══════════
-create table notices (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  message text,
-  date text,
-  is_active boolean not null default true,
-  created_at timestamptz not null default now()
-);
-
-alter table notices enable row level security;
-
-create policy "public_read_active_notices"
-  on notices for select to anon using (is_active = true);
-
-create policy "authenticated_read_all_notices"
-  on notices for select to authenticated using (true);
-
-create policy "authenticated_insert_notices"
-  on notices for insert to authenticated with check (true);
-
-create policy "authenticated_update_notices"
-  on notices for update to authenticated using (true);
-
-create policy "authenticated_delete_notices"
-  on notices for delete to authenticated using (true);
-
-
--- ═══════════ DOCUMENTS TABLE ═══════════
-create table documents (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  category text,
-  file_url text not null,
-  file_path text,
-  uploaded_at timestamptz not null default now()
-);
-
-alter table documents enable row level security;
-
-create policy "public_read_documents"
-  on documents for select to anon, authenticated using (true);
-
-create policy "authenticated_insert_documents"
-  on documents for insert to authenticated with check (true);
-
-create policy "authenticated_update_documents"
-  on documents for update to authenticated using (true);
-
-create policy "authenticated_delete_documents"
-  on documents for delete to authenticated using (true);
-
-
--- ═══════════ SITE CONTENT TABLE (Hero / Popup / Ticker / Payment / Contact) ═══════════
-create table site_content (
-  key text primary key,
-  value jsonb not null default '{}'::jsonb,
-  updated_at timestamptz default now()
-);
-
-alter table site_content enable row level security;
-
-create policy "public_read_site_content"
-  on site_content for select to anon, authenticated using (true);
-
-create policy "authenticated_insert_site_content"
-  on site_content for insert to authenticated with check (true);
-
-create policy "authenticated_update_site_content"
-  on site_content for update to authenticated using (true);
-
-create policy "authenticated_delete_site_content"
-  on site_content for delete to authenticated using (true);
-
-
--- ═══════════ STORAGE BUCKET #1 — documents (Documents feature) ═══════════
-insert into storage.buckets (id, name, public)
-values ('documents', 'documents', true)
-on conflict (id) do nothing;
-
-create policy "public_read_documents_bucket"
-  on storage.objects for select using (bucket_id = 'documents');
-
-create policy "authenticated_upload_documents_bucket"
-  on storage.objects for insert to authenticated with check (bucket_id = 'documents');
-
-create policy "authenticated_delete_documents_bucket"
-  on storage.objects for delete to authenticated using (bucket_id = 'documents');
-
-
--- ═══════════ STORAGE BUCKET #2 — site-assets (Service files + QR code) ═══════════
-insert into storage.buckets (id, name, public)
-values ('site-assets', 'site-assets', true)
-on conflict (id) do nothing;
-
-create policy "public_read_site_assets_bucket"
-  on storage.objects for select using (bucket_id = 'site-assets');
-
-create policy "authenticated_upload_site_assets_bucket"
-  on storage.objects for insert to authenticated with check (bucket_id = 'site-assets');
-
-create policy "authenticated_update_site_assets_bucket"
-  on storage.objects for update to authenticated using (bucket_id = 'site-assets');
-
-create policy "authenticated_delete_site_assets_bucket"
-  on storage.objects for delete to authenticated using (bucket_id = 'site-assets');
+```
+├── index.html      # entire site — markup, styles, and app logic
+└── README.md       # you are here
 ```
 
-Ye pura chalne ke baad ban jayega:
-- 4 tables: `services`, `notices`, `documents`, `site_content`
-- 2 storage buckets: `documents`, `site-assets`
-
 ---
 
-## Step 3 — Admin User Banayein (Supabase Auth)
+## 🚀 Getting Started (Local Setup)
 
-Admin Login ab Supabase Auth se chalta hai (email + password), purane
-"username: yogesh" system ki jagah.
+### 1. Clone the repo
+```bash
+git clone https://github.com/<your-username>/aadhaar-seva-kendra-batang.git
+cd aadhaar-seva-kendra-batang
+```
 
-1. Dashboard → **Authentication → Users** → **Add user** → **Create new user**
-2. Email: kuch bhi (real hona zaroori nahi), jaise `admin@cscbatang.com`
-3. Password: strong password set karein
-4. **Auto Confirm User** ✅ zaroor check karein
-5. **Create user** click karein
+### 2. Set up Supabase
+This project needs a Supabase project with 4 tables, 2 storage buckets,
+and Row Level Security policies. Full SQL scripts and step-by-step
+instructions are in **[`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md)**.
 
-Yahi email + password website ke Admin Login form me use hoga.
-
-> 🔐 Baad me password badalna ho to website ke Admin Panel → Settings tab →
-> "Change Password" se seedha badal sakte hain.
-
----
-
-## Step 4 — API Keys Website me Daalein
-
-1. Dashboard → **Project Settings → API**
-2. Copy karein: **Project URL** aur **anon public** key
-3. HTML file me `<script>` tag ke shuru me ye lines dhoondhein:
-
+### 3. Add your Supabase credentials
+Open `index.html`, find these lines near the top of the `<script>` tag:
 ```js
 const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
 const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 ```
+Replace with your project's URL and **anon public key** (found in
+Supabase Dashboard → Project Settings → API).
 
-4. Apne actual values se replace karein:
+> The anon key is safe to expose in client-side code — write access is
+> restricted entirely by Row Level Security policies, not by hiding the key.
 
-```js
-const SUPABASE_URL = "https://xxxxx.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOi....(lambi string)....";
+### 4. Run locally
+Serve the file with any static server (opening via `file://` can cause
+cross-origin script issues):
+```bash
+python3 -m http.server 8000
 ```
-
-> ℹ️ **anon key public karna safe hai** — ye sirf utna hi access deti hai
-> jitna RLS policies me define kiya gaya hai (sirf logged-in admin likh/
-> delete kar sakta hai, baaki sab sirf padh sakte hain). Isliye ye key
-> seedha HTML/JS file me rakhna normal practice hai. Ye plain static HTML
-> site hai (koi Node/React build step nahi), isliye traditional `.env`
-> file yahan directly kaam nahi karti — agar future me Netlify/Vercel pe
-> deploy karein to unke "Environment Variables" + ek chhota build-script
-> se inject kar sakte hain, par abhi ke liye seedha file me daalna hi
-> sabse simple tareeka hai.
+Visit `http://localhost:8000`.
 
 ---
 
-## Step 5 — Website Test Karein
+## 🔑 Admin Access
 
-1. File save karke browser me kholein.
-2. **"⚙ Admin Login"** button dabayein → Step 3 wala email + password daalein.
-3. Admin Panel me:
-   - **Services** tab me ek service add/edit karein
-   - **Notices** tab me ek notice add karein
-   - **Documents** tab me ek PDF/image upload karein
-   - **Settings** tab me Hero text, Payment UPI/QR, Contact info save karein
-4. Panel band karke homepage refresh karein — har jagah wahi naya data
-   dikhna chahiye.
-5. Ab isi website ko doosre browser/phone se kholein — wahan bhi bilkul
-   wahi data dikhega, kyunki sab kuch ab Supabase database me store hai,
-   kisi ek browser ki LocalStorage me nahi.
+Admin login uses Supabase Auth (email + password). Create an admin user
+from Supabase Dashboard → Authentication → Users (see
+[`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md) for details). Once logged in
+via the site's "Admin Login" button, the admin can manage Services,
+Notices, Documents, Hero content, Payment/QR info, and Contact details —
+changes reflect to all visitors instantly.
 
 ---
 
-## "Script error" / Backend connect na ho to
+## 📦 Deployment
 
-Agar page load hote hi koi generic **"Script error"** ya backend-related
-error toast dikhe:
+This is a static site — deploy the `index.html` as-is to any static host:
 
-1. Sabse pehle check karein ki Step 4 wali `SUPABASE_URL` aur
-   `SUPABASE_ANON_KEY` sahi se paste hui hain (placeholder text jaise
-   `YOUR_SUPABASE_...` to nahi reh gaya).
-2. File ko seedha double-click karke (`file://...`) kholne ki bajaye,
-   ek simple local server se serve karein — jaise VS Code ka
-   "Live Server" extension, ya terminal me:
-   ```
-   python3 -m http.server 8000
-   ```
-   phir browser me `http://localhost:8000/final2_updated.html` kholein.
-   (Kuch browsers `file://` se load hone par cross-origin scripts —
-   jaise Supabase library CDN — ko properly load/report nahi karte,
-   isse generic "Script error" aata hai.)
-3. Browser me **F12 → Console** tab kholke dekhein — wahan asli error
-   message (jaise galat URL/key, ya RLS policy missing) clearly dikhega.
+- **Netlify** — drag-and-drop, or connect this GitHub repo for
+  auto-deploy on every push
+- **Vercel** — import this repo, no build settings needed
+- **GitHub Pages** — enable Pages on this repo, serve from root
+
+After deploying, add your live URL to Supabase Dashboard →
+Authentication → URL Configuration (Site URL + Redirect URLs).
 
 ---
 
-## Troubleshooting
+## 🤝 Contributing
 
-| Problem | Reason / Fix |
-|---|---|
-| Login fail ho raha hai | Email/password Step 3 se match karke check karein. User confirm na ho to Dashboard me manually confirm karein. |
-| Kuch bhi load nahi ho raha, blank sections | `SUPABASE_URL`/`SUPABASE_ANON_KEY` galat/placeholder hai — Step 4 dobara check karein. Console (F12) me exact error dikhega. |
-| Upload fail ho raha hai | Step 2 ka poora SQL bina error ke chala tha ya nahi confirm karein (especially bucket + storage policies). |
-| Admin change kiya par customer side nahi dikh raha | Browser cache/hard-refresh try karein (Ctrl+Shift+R). Notices ke liye `is_active` column check karein. |
-| "Script error" aa raha hai | Upar wala "Script error" section follow karein — zyada tar `file://` se khaulne ya galat keys ki wajah se hota hai. |
+This is a client project for a local CSC operator. Issues and suggestions
+are welcome via GitHub Issues.
 
 ---
 
-Ab website **100% Supabase-backed** hai — Aman bhai Admin Panel me jo bhi
-change karenge (Services, Notices, Documents, Hero, Popup, Ticker,
-Payment/QR, Contact), wo turant sabhi customers ko real data se dikhega,
-chahe wo kisi bhi device se site khol rahe hon.
+## 📄 License
+
+This project is provided as-is for the CSC Batang, Raipur operation.
