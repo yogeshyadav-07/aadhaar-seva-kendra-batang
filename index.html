@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+</head>
+<body>
+    
+<!-- ═══════════ ANNOUNCEMENT POPUP ═══════════ -->
+<div id="popup-ov">
+  <div id="popup-box">
+    <div class="pop-hd"><div class="pop-ic">📢</div><div><h3 id="pop-ttl">महत्वपूर्ण सूचना</h3><span id="pop-sub">CSC Centre | Aadhaar Sewa Kendra</span></div></div>
+    <div class="pop-bd">
+      <p id="pop-msg">हमारे CSC Centre में आधार अपडेट, पैन कार्ड, आयुष्मान कार्ड एवं सभी सरकारी योजनाओं के आवेदन की सुविधा उपलब्ध है।</p>
+      <div class="pop-hl" id="pop-hl">🕐 सोमवार – शनिवार: सुबह 9 बजे – शाम 6 बजे | रविवार: 10 बजे – 2 बजे</div>
+    </div>
+    <div class="pop-ac">
+      <button class="btn-pclose" onclick="closePopup()">बंद करें</button>
+      <button class="btn-pok" onclick="closePopup()">ठीक है ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ APPLY NOW MODAL ═══════════ -->
+<div id="apply-ov">
+  <div class="apply-card">
+    <div class="apply-hd">
+      <div class="apply-hd-ic">🏛️</div>
+      <div><h3 id="apply-svc-name">आवेदन करें</h3><p>CSC Centre, Batang, Raipur</p></div>
+    </div>
+    <div class="apply-bd">
+      <p class="apply-msg">आवेदन के लिए कृपया हमारे CSC Centre पर पधारें।</p>
+      <div class="apply-info">
+        <strong>📋 आवेदन प्रक्रिया:</strong>
+        फॉर्म भरना, दस्तावेज सत्यापन एवं आवेदन जमा करने के लिए सीधे केंद्र पर आएं।<br/><br/>
+        <strong>📍 पता:</strong> Batang, Raipur, Chhattisgarh — 491111<br/>
+        <strong>📞 संपर्क:</strong> 7697800802<br/>
+        <strong>⏰ समय:</strong> Mon–Sat: 9AM–6PM | Sun: 10AM–2PM
+      </div>
+    </div>
+    <div class="apply-ft">
+      <button class="apply-btn-wa" onclick="window.open('https://wa.me/916268138217?text=नमस्ते%2C%20मुझे%20'+encodeURIComponent(document.getElementById('apply-svc-name').textContent)+'%20के%20बारे%20में%20जानकारी%20चाहिए।','_blank');closeApplyModal()">💬 WhatsApp करें</button>
+      <button class="apply-btn-cl" onclick="closeApplyModal()">बंद करें</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav id="navbar">
+  <div class="nb-inner">
+    <a href="#" class="nb-brand">
+      <div class="nb-logo">🏛️</div>
+      <div class="nb-txt"><h1>CSC Centre | Aadhaar Sewa Kendra</h1><small>Batang, Raipur, Chhattisgarh — सरकारी डिजिटल सेवा केंद्र</small></div>
+    </a>
+    <div class="nb-links">
+      <a href="#hero">होम</a><a href="#services">सेवाएं</a><a href="#notices">नोटिस</a>
+      <a href="#documents">दस्तावेज़</a>
+      <a href="#payment">भुगतान</a><a href="#location">स्थान</a><a href="#faq">FAQ</a>
+    </div>
+    <div class="nb-ctrl">
+      <select id="lang-sel" onchange="switchLang(this.value)">
+        <option value="hi">🇮🇳 हिंदी</option><option value="en">🌐 English</option><option value="cg">🏘️ छत्तीसगढ़ी</option>
+      </select>
+      <button id="dark-btn" onclick="toggleDark()">🌙</button>
+      <button id="ham-btn" onclick="toggleMenu()">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mob-menu">
+  <a href="#hero" onclick="closeMenu()">🏠 होम</a>
+  <a href="#services" onclick="closeMenu()">⚙️ सेवाएं</a>
+  <a href="#notices" onclick="closeMenu()">📋 नोटिस</a>
+  <a href="#documents" onclick="closeMenu()">📄 दस्तावेज़</a>
+  <a href="#payment" onclick="closeMenu()">💳 भुगतान</a>
+  <a href="#location" onclick="closeMenu()">📍 स्थान</a>
+  <a href="#faq" onclick="closeMenu()">❓ FAQ</a>
+</div>
+
+<!-- ═══════════ SEARCH ═══════════ -->
+<div id="srch-sec">
+  <div class="srch-wrap">
+    <input type="text" id="srch-inp" placeholder="🔍 सेवा खोजें... आधार, पैन, आयुष्मान..." oninput="searchSvc(this.value)" autocomplete="off"/>
+    <button class="srch-btn" onclick="searchSvc(document.getElementById('srch-inp').value)">🔍</button>
+    <div id="srch-res"></div>
+  </div>
+</div>
+
+<!-- ═══════════ TICKER ═══════════ -->
+<div id="ticker">
+  <div class="tick-lbl">🔔 सूचना</div>
+  <div class="tick-track"><span class="tick-txt" id="tick-el">📢 आधार अपडेट हेतु मूल दस्तावेज लाएं &nbsp;|&nbsp; 🏥 आयुष्मान कार्ड हेतु संपर्क करें &nbsp;|&nbsp; 📋 पीएम किसान e-KYC जरूरी &nbsp;|&nbsp; ☎️ 7697800802 &nbsp;|&nbsp; ⏰ सोम-शनि 9AM-6PM</span></div>
+</div>
+<div class="gov-strip"></div>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero">
+  <div class="h-shapes"><div class="h-sh s1"></div><div class="h-sh s2"></div><div class="h-sh s3"></div></div>
+  <div class="h-inner container">
+    <div class="h-content su">
+      <div class="h-badge"><span class="dot">🟢</span> <span id="hero-badge-el">सरकारी मान्यता प्राप्त केंद्र — CSC 3.0</span></div>
+      <h2 id="hero-h2-el">आपकी <span>सरकारी सेवाएं</span><br/>एक ही जगह</h2>
+      <p id="hero-p-el">Batang, Raipur में आपके नजदीकी CSC सेवा केंद्र पर आधार अपडेट, पैन कार्ड, सभी प्रमाण पत्र एवं सरकारी योजनाओं की सेवाएं प्राप्त करें।</p>
+      <div class="h-cta">
+        <a href="#services" class="btn-hp">🚀 <span id="hero-c1-el">सेवाएं देखें</span></a>
+        <a href="tel:7697800802" class="btn-hs">📞 <span id="hero-c2-el">अभी कॉल करें</span></a>
+      </div>
+      <div class="h-stats">
+        <div class="stat-c"><div class="stat-n" data-target="5000">0</div><div class="stat-l">आवेदन पूर्ण</div></div>
+        <div class="stat-c"><div class="stat-n" data-target="10">0</div><div class="stat-l">+ सेवाएं</div></div>
+        <div class="stat-c"><div class="stat-n" data-target="7">0</div><div class="stat-l">साल का अनुभव</div></div>
+        <div class="stat-c"><div class="stat-n" data-target="4.9">0</div><div class="stat-l">⭐ रेटिंग</div></div>
+      </div>
+    </div>
+    <div class="h-right fi">
+      <div class="h-card-stack">
+        <div class="h-main-card">
+          <div class="h-card-logo">🏛️</div>
+          <div class="h-card-info">
+            <h4>CSC | Aadhaar Sewa Kendra</h4>
+            <p>Common Service Centre — Government of India</p>
+            <div class="h-card-div"></div>
+            <div class="h-card-rows">
+              <div class="h-row"><span class="ri">👤</span><strong>Aman Kumar</strong></div>
+              <div class="h-row"><span class="ri">📞</span><span>6268138217</span></div>
+              <div class="h-row"><span class="ri">📍</span><span>Batang, Raipur, CG 491111</span></div>
+              <div class="h-row"><span class="ri">✉️</span><span>yogesh626813@gmail.com</span></div>
+              <div class="h-row"><span class="ri">⏰</span><span>Mon–Sat: 9AM–6PM</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="h-float">🟢 अभी खुला है</div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="gov-strip"></div>
+
+<!-- ═══════════ SERVICES ═══════════ -->
+<section id="services">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-tag">⚙️ हमारी सेवाएं</div>
+      <h2>सभी सरकारी सेवाएं एक स्थान पर</h2>
+      <p>नीचे दी गई किसी भी सेवा के लिए View Form करें या Apply Now पर क्लिक करें।</p>
+    </div>
+    <div class="svc-grid" id="svc-grid"></div>
+  </div>
+</section>
+
+<!-- ═══════════ NOTICES ═══════════ -->
+<section id="notices">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-tag">📋 सूचना पट्ट</div>
+      <h2>नोटिस बोर्ड</h2>
+      <p>सभी नवीनतम सूचनाएं एवं घोषणाएं यहाँ देखें।</p>
+    </div>
+    <div class="ntc-board">
+      <div class="ntc-hd"><span style="font-size:1.25rem">📋</span><h3>सरकारी सूचनाएं</h3></div>
+      <div id="ntc-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DOCUMENTS ═══════════ -->
+<section id="documents">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-tag">📄 दस्तावेज़</div>
+      <h2>फॉर्म एवं दस्तावेज़ डाउनलोड करें</h2>
+      <p>यहाँ से आवश्यक फॉर्म एवं दस्तावेज़ डाउनलोड करें।</p>
+    </div>
+    <div class="ntc-board">
+      <div class="ntc-hd"><span style="font-size:1.25rem">📄</span><h3>उपलब्ध दस्तावेज़</h3></div>
+      <div id="doc-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PAYMENT ═══════════ -->
+<section id="payment">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-tag">💳 ऑनलाइन भुगतान</div>
+      <h2>UPI से भुगतान करें</h2>
+      <p>सेवा शुल्क का भुगतान UPI या QR कोड के माध्यम से करें।</p>
+    </div>
+    <div class="pay-card">
+      <div class="pay-left">
+        <h3>💳 ऑनलाइन पेमेंट</h3>
+        <p>UPI ID से या QR कोड स्कैन करके भुगतान करें। पेमेंट के बाद स्क्रीनशॉट लेकर आएं।</p>
+        <div class="upi-row">
+          <span id="upi-el">aman.kumar@upi</span>
+          <button class="btn-copy" onclick="copyUPI()">📋 कॉपी</button>
+        </div>
+        <div class="pay-methods">
+          <h4>स्वीकृत माध्यम</h4>
+          <div class="pay-icons">
+            <div class="pay-icon">📱 PhonePe</div><div class="pay-icon">💚 GPay</div>
+            <div class="pay-icon">🅿️ Paytm</div><div class="pay-icon">🏦 NetBanking</div>
+          </div>
+        </div>
+      </div>
+      <div class="pay-right">
+        <div class="qr-box" id="qr-box">
+          <div class="qr-ph"><span class="qr-ph-ic">📱</span><p>QR Code<br/><small>Scan to Pay</small></p></div>
+        </div>
+        <div class="qr-info">
+          <h4 id="pay-name-el">Aman Kumar</h4>
+          <p>CSC Centre, Batang, Raipur</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ LOCATION ═══════════ -->
+<section id="location">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-tag">📍 हमारा स्थान</div>
+      <h2>हमें यहाँ ढूंढें</h2>
+      <p>Batang, Raipur, Chhattisgarh में हमारे केंद्र पर पधारें।</p>
+    </div>
+    <div class="loc-grid">
+      <div class="loc-info">
+        <h3>CSC Centre | Aadhaar Sewa Kendra</h3>
+        <div class="loc-dets">
+          <div class="loc-row"><div class="loc-ic">👤</div><div class="loc-tx"><strong>Aman Kumar</strong><span>केंद्र प्रभारी (VLE)</span></div></div>
+          <div class="loc-row"><div class="loc-ic">📍</div><div class="loc-tx"><strong>Batang, Raipur</strong><span>Chhattisgarh — 491111</span></div></div>
+          <div class="loc-row"><div class="loc-ic">📞</div><div class="loc-tx"><strong id="ct-ph-el">7697800802</strong><span>सोम–शनि 9AM–6PM</span></div></div>
+          <div class="loc-row"><div class="loc-ic">✉️</div><div class="loc-tx"><strong id="ct-em-el">yogesh626813@gmail.com</strong><span>ईमेल</span></div></div>
+          <div class="loc-row"><div class="loc-ic">⏰</div><div class="loc-tx"><strong>कार्यालय समय</strong><span>सोम–शनि: 9AM–6PM | रविवार: 10AM–2PM</span></div></div>
+        </div>
+        <a href="https://www.google.com/maps/search/Batang+Raipur+Chhattisgarh+491111" target="_blank" rel="noopener" class="btn-map">🗺️ Google Maps पर देखें</a>
+      </div>
+      <div class="map-vis">
+        <div class="map-grid-bg"></div>
+        <div class="map-pin">📍</div>
+        <h4>Batang, Raipur</h4>
+        <p>Chhattisgarh, India — 491111</p>
+        <a href="https://www.google.com/maps/search/Batang+Raipur+Chhattisgarh+491111" target="_blank" rel="noopener" class="btn-map" style="font-size:.8rem;padding:9px 15px;margin-top:5px">🗺️ नक्शे पर खोलें</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section id="faq">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-tag">❓ सामान्य प्रश्न</div>
+      <h2>अक्सर पूछे जाने वाले प्रश्न</h2>
+      <p>यहाँ सबसे ज्यादा पूछे जाने वाले प्रश्नों के उत्तर दिए गए हैं।</p>
+    </div>
+    <div class="faq-list" id="faq-list"></div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<div class="gov-strip"></div>
+<footer id="footer">
+  <div class="ft-grid">
+    <div class="ft-brand">
+      <h3>🏛️ CSC Centre | Aadhaar Sewa Kendra</h3>
+      <p>Common Service Centre — भारत सरकार द्वारा प्राधिकृत। Batang, Raipur में आपकी सेवा में।</p>
+      <div class="ft-social">
+        <a href="https://wa.me/917697800802" id="wa-ft-link" target="_blank" rel="noopener" class="ft-soc-btn">💬</a>
+        <a href="tel:7697800802" class="ft-soc-btn">📞</a>
+        <a href="mailto:yogesh626813@gmail.com" class="ft-soc-btn">✉️</a>
+        <a href="#location" class="ft-soc-btn">📍</a>
+      </div>
+    </div>
+    <div class="ft-col">
+      <h4>⚙️ सेवाएं</h4>
+      <ul>
+        <li><a href="#services">▸ आधार अपडेट</a></li><li><a href="#services">▸ पैन कार्ड</a></li>
+        <li><a href="#services">▸ आयुष्मान कार्ड</a></li><li><a href="#services">▸ पीएम किसान</a></li>
+        <li><a href="#services">▸ प्रमाण पत्र</a></li><li><a href="#services">▸ पेंशन सेवाएं</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>🔗 त्वरित लिंक</h4>
+      <ul>
+        <li><a href="#hero">▸ होम</a></li><li><a href="#notices">▸ नोटिस बोर्ड</a></li>
+        <li><a href="#payment">▸ भुगतान</a></li><li><a href="#location">▸ स्थान</a></li>
+        <li><a href="#faq">▸ FAQ</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>📞 संपर्क</h4>
+      <div class="ft-ct-item"><span class="ft-ct-ic">👤</span><p><strong style="color:#fff">Aman Kumar</strong><br/>VLE — CSC Centre</p></div>
+      <div class="ft-ct-item"><span class="ft-ct-ic">📞</span><p><a href="tel:7697800802" style="color:rgba(255,255,255,.65)">7697800802</a></p></div>
+      <div class="ft-ct-item"><span class="ft-ct-ic">✉️</span><p><a href="mailto:yogesh626813@gmail.com" style="color:rgba(255,255,255,.65)">yogesh626813@gmail.com</a></p></div>
+      <div class="ft-ct-item"><span class="ft-ct-ic">📍</span><p>Batang, Raipur<br/>Chhattisgarh — 491111</p></div>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <p>© 2025 <span>CSC Centre | Aadhaar Sewa Kendra</span>. सर्वाधिकार सुरक्षित। Aman Kumar, Raipur</p>
+    <p>🇮🇳 <span>Digital India</span></p>
+  </div>
+  <!-- Admin Login — Footer Bottom Center -->
+  <div class="ft-admin-strip">
+    <button class="ft-admin-btn" onclick="openAdmModal()">⚙ Admin Login</button>
+  </div>
+</footer>
+
+<!-- ═══════════ FLOATING BUTTONS ═══════════ -->
+<a id="wa-btn" href="https://wa.me/917697800802?text=नमस्ते%2C%20CSC%20Centre%20की%20सेवाओं%20के%20बारे%20में%20जानकारी%20चाहिए।" target="_blank" rel="noopener">💬<span class="wa-tip">WhatsApp पर बात करें</span></a>
+<button id="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+
+<!-- ═══════════ CHATBOT ═══════════ -->
+<button id="cb-btn" onclick="toggleCB()">🤖</button>
+<div id="cb-box">
+  <div class="cb-hd">
+    <div class="cb-hd-l"><div class="cb-av">🤖</div><div><h4>CSC Assistant</h4><small>ऑनलाइन | सेवा में</small></div></div>
+    <button class="cb-close" onclick="toggleCB()">✕</button>
+  </div>
+  <div class="cb-msgs" id="cb-msgs">
+    <div class="cb-msg bot"><div class="cb-bub">नमस्ते! 🙏 मैं CSC Assistant हूँ। किस सेवा के बारे में जानना है?</div></div>
+  </div>
+  <div class="cb-sugs">
+    <button class="cb-sg" onclick="cbAsk('आधार')">आधार</button>
+    <button class="cb-sg" onclick="cbAsk('पैन')">पैन कार्ड</button>
+    <button class="cb-sg" onclick="cbAsk('आयुष्मान')">आयुष्मान</button>
+    <button class="cb-sg" onclick="cbAsk('शुल्क')">शुल्क</button>
+    <button class="cb-sg" onclick="cbAsk('समय')">समय</button>
+  </div>
+  <div class="cb-inp-row">
+    <input type="text" id="cb-inp" placeholder="प्रश्न पूछें..." onkeydown="if(event.key==='Enter')cbSend()"/>
+    <button id="cb-send" onclick="cbSend()">➤</button>
+  </div>
+</div>
+
+<!-- ═══════════ TOAST ═══════════ -->
+<div id="toast-wrap"></div>
+
+<!-- ═══════════ ADMIN LOGIN MODAL ═══════════ -->
+<div id="adm-modal-ov">
+  <div class="amc">
+    <div class="amc-hd">
+      <span class="amc-sh">🛡️</span>
+      <h3>Admin Login</h3>
+      <p>CSC Centre Management System</p>
+      <button class="amc-cls" onclick="closeAdmModal()">✕</button>
+    </div>
+    <div class="amc-bd">
+      <div id="amc-err" class="amc-err">❌ गलत Email या Password!</div>
+      <div class="amc-fld"><label>Email</label><input type="email" id="amc-user" placeholder="admin@cscbatang.com" autocomplete="off"/></div>
+      <div class="amc-fld"><label>Password</label><input type="password" id="amc-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <button class="btn-amc-sign" onclick="doLogin()">🔓 Login करें</button>
+      <p class="amc-hint">🔒 Authorized Personnel Only</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ EDIT MODAL ═══════════ -->
+<div id="edit-ov">
+  <div class="edit-card">
+    <div class="edit-hd"><h4 id="edit-ttl">Edit</h4><button class="edit-cls" onclick="closeEdit()">✕</button></div>
+    <div class="edit-bd" id="edit-bd"></div>
+    <div class="edit-ft">
+      <button class="adm-btn adm-gh" onclick="closeEdit()">रद्द करें</button>
+      <button class="adm-btn adm-pri" onclick="saveEdit()">💾 सेव करें</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ADMIN DASHBOARD PANEL ═══════════ -->
+<div id="adm-panel">
+  <div class="adm-tb">
+    <div class="adm-tb-l">
+      <button class="adm-ham" onclick="toggleAdmSB()">☰</button>
+      <span class="adm-logo-i">🏛️</span>
+      <div><h2>Admin Dashboard</h2><small>CSC Centre | Aadhaar Sewa Kendra</small></div>
+    </div>
+    <div class="adm-tb-r">
+      <button class="adm-tbtn" onclick="location.reload()">🔄 <span>Refresh</span></button>
+      <button class="adm-tbtn out" onclick="doLogout()">🚪 <span>Logout</span></button>
+    </div>
+  </div>
+  <div class="adm-sb-ov" id="adm-sb-ov" onclick="closeAdmSB()"></div>
+  <div class="adm-layout">
+    <aside class="adm-sb" id="adm-sb">
+      <div class="adm-sb-sec">
+        <div class="adm-sb-lbl">Main</div>
+        <button class="adm-nav active" onclick="switchTab(this,'t-dash')"><span class="ni">📊</span>Dashboard</button>
+        <button class="adm-nav" onclick="switchTab(this,'t-svc')"><span class="ni">⚙️</span>Services <span class="adm-bdg" id="bdg-svc">0</span></button>
+        <button class="adm-nav" onclick="switchTab(this,'t-ntc')"><span class="ni">📋</span>Notices <span class="adm-bdg" id="bdg-ntc">0</span></button>
+        <button class="adm-nav" onclick="switchTab(this,'t-doc')"><span class="ni">📄</span>Documents <span class="adm-bdg" id="bdg-doc">0</span></button>
+      </div>
+      <div class="adm-sb-sec">
+        <div class="adm-sb-lbl">Content</div>
+        <button class="adm-nav" onclick="switchTab(this,'t-hero')"><span class="ni">🏠</span>Hero</button>
+        <button class="adm-nav" onclick="switchTab(this,'t-pop')"><span class="ni">📢</span>Popup &amp; Ticker</button>
+        <button class="adm-nav" onclick="switchTab(this,'t-pay')"><span class="ni">💳</span>Payment / QR</button>
+        <button class="adm-nav" onclick="switchTab(this,'t-ct')"><span class="ni">📞</span>Contact</button>
+      </div>
+      <div class="adm-sb-sec">
+        <div class="adm-sb-lbl">System</div>
+        <button class="adm-nav" onclick="switchTab(this,'t-set')"><span class="ni">🔐</span>Settings</button>
+      </div>
+    </aside>
+    <main class="adm-main">
+      <!-- DASHBOARD TAB -->
+      <div class="adm-tab active" id="t-dash">
+        <div class="adm-sec-t"><span>📊</span>Dashboard Overview</div>
+        <div class="adm-stats">
+          <div class="adm-stat"><div class="adm-st-i">⚙️</div><div class="adm-st-n" id="ds-sv">0</div><div class="adm-st-l">Services</div></div>
+          <div class="adm-stat"><div class="adm-st-i">📋</div><div class="adm-st-n" id="ds-nt">0</div><div class="adm-st-l">Notices</div></div>
+          <div class="adm-stat"><div class="adm-st-i">📄</div><div class="adm-st-n" id="ds-dc">0</div><div class="adm-st-l">Documents</div></div>
+          <div class="adm-stat"><div class="adm-st-i">👥</div><div class="adm-st-n" id="ds-vi">0</div><div class="adm-st-l">Visitors</div></div>
+          <div class="adm-stat"><div class="adm-st-i">📅</div><div class="adm-st-n" id="ds-dt" style="font-size:.88rem;padding-top:6px">--</div><div class="adm-st-l">Today</div></div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>⚡ Quick Actions</h4></div>
+          <div class="adm-c-bd" style="flex-direction:row;flex-wrap:wrap;gap:8px">
+            <button class="adm-btn adm-pri" onclick="switchTab(document.querySelector('[onclick*=t-svc]'),'t-svc')">➕ Add Service</button>
+            <button class="adm-btn adm-ok"  onclick="switchTab(document.querySelector('[onclick*=t-ntc]'),'t-ntc')">📋 Add Notice</button>
+            <button class="adm-btn adm-warn" onclick="switchTab(document.querySelector('[onclick*=t-pop]'),'t-pop')">📢 Edit Popup</button>
+            <button class="adm-btn adm-gh"   onclick="switchTab(document.querySelector('[onclick*=t-pay]'),'t-pay')">💳 Update QR</button>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>📋 Recent Notices</h4></div>
+          <div class="adm-c-bd"><div class="adm-list" id="dash-ntc"></div></div>
+        </div>
+      </div>
+      <!-- SERVICES TAB -->
+      <div class="adm-tab" id="t-svc">
+        <div class="adm-sec-t"><span>⚙️</span>Service Management</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>➕ Add New Service</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fgrid">
+              <div class="adm-fg"><label>Icon (Emoji)</label><input id="sv-ic" placeholder="📄" maxlength="4"/></div>
+              <div class="adm-fg"><label>Service Name</label><input id="sv-nm" placeholder="आय प्रमाण पत्र"/></div>
+              <div class="adm-fg adm-full"><label>Description</label><textarea id="sv-dsc" rows="2" placeholder="Service description..."></textarea></div>
+              <div class="adm-fg adm-full"><label>Required Documents</label><input id="sv-doc" placeholder="आधार, राशन कार्ड, फोटो"/></div>
+            </div>
+            <button class="adm-btn adm-pri" onclick="addService()">➕ Add Service</button>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>📋 All Services</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-srch-r"><input class="adm-srch-i" id="sv-srch" placeholder="🔍 Search services..." oninput="renderAdmSvc()"/></div>
+            <div class="adm-list" id="adm-svc-list"></div>
+          </div>
+        </div>
+      </div>
+      <!-- NOTICES TAB -->
+      <div class="adm-tab" id="t-ntc">
+        <div class="adm-sec-t"><span>📋</span>Notice Management</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>➕ Add Notice</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fg"><label>Title</label><input id="nt-ttl" placeholder="Notice heading..."/></div>
+            <div class="adm-fg"><label>Body</label><textarea id="nt-bdy" rows="3" placeholder="Notice details..."></textarea></div>
+            <div class="adm-fgrid">
+              <div class="adm-fg"><label>Date</label><input id="nt-dt" placeholder="22 मई 2025"/></div>
+              <div class="adm-fg"><label>Show NEW badge?</label>
+                <select id="nt-nw"><option value="true">✅ Yes</option><option value="false">❌ No</option></select>
+              </div>
+            </div>
+            <button class="adm-btn adm-ok" onclick="addNotice()">📋 Add Notice</button>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>📋 All Notices</h4></div>
+          <div class="adm-c-bd"><div class="adm-list" id="adm-ntc-list"></div></div>
+        </div>
+      </div>
+      <!-- DOCUMENTS TAB -->
+      <div class="adm-tab" id="t-doc">
+        <div class="adm-sec-t"><span>📄</span>Documents Management</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>➕ Upload Document</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fgrid">
+              <div class="adm-fg"><label>Title</label><input id="dc-ttl" placeholder="आधार अपडेट फॉर्म"/></div>
+              <div class="adm-fg"><label>Category</label><input id="dc-cat" placeholder="फॉर्म / नोटिफिकेशन / अन्य"/></div>
+              <div class="adm-fg adm-full"><label>PDF / Image चुनें</label>
+                <input type="file" id="dc-file" accept="application/pdf,image/*"
+                  style="padding:8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);width:100%"/>
+              </div>
+            </div>
+            <button class="adm-btn adm-pri" onclick="uploadDocument()">⬆️ Upload Document</button>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>📄 All Documents</h4></div>
+          <div class="adm-c-bd"><div class="adm-list" id="adm-doc-list"></div></div>
+        </div>
+      </div>
+      <!-- HERO TAB -->
+      <div class="adm-tab" id="t-hero">
+        <div class="adm-sec-t"><span>🏠</span>Hero Section</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>✏️ Edit Hero Content</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fg"><label>Heading</label><input id="hr-h2" placeholder="आपकी सरकारी सेवाएं..."/></div>
+            <div class="adm-fg"><label>Subtext</label><textarea id="hr-p" rows="3" placeholder="Hero paragraph..."></textarea></div>
+            <div class="adm-fgrid">
+              <div class="adm-fg"><label>CTA Button 1</label><input id="hr-c1" placeholder="सेवाएं देखें"/></div>
+              <div class="adm-fg"><label>CTA Button 2</label><input id="hr-c2" placeholder="अभी कॉल करें"/></div>
+              <div class="adm-fg"><label>Badge Text</label><input id="hr-bdg" placeholder="CSC 3.0..."/></div>
+            </div>
+            <button class="adm-btn adm-pri" onclick="saveHero()">💾 Save Hero</button>
+          </div>
+        </div>
+      </div>
+      <!-- POPUP & TICKER TAB -->
+      <div class="adm-tab" id="t-pop">
+        <div class="adm-sec-t"><span>📢</span>Popup &amp; Ticker</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>📢 Popup Settings</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fg"><label>Enable Popup?</label>
+              <select id="pp-en"><option value="true">✅ Show popup</option><option value="false">❌ Disable</option></select>
+            </div>
+            <div class="adm-fg"><label>Popup Title</label><input id="pp-ttl" placeholder="महत्वपूर्ण सूचना"/></div>
+            <div class="adm-fg"><label>Message</label><textarea id="pp-msg" rows="3" placeholder="Popup message..."></textarea></div>
+            <div class="adm-fg"><label>Highlight Text</label><input id="pp-hl" placeholder="🕐 Timing info..."/></div>
+            <button class="adm-btn adm-pri" onclick="savePopup()">💾 Save Popup</button>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>🔔 Ticker Text</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fg"><label>Ticker (use &amp;nbsp;|&amp;nbsp; as separator)</label>
+              <textarea id="tick-adm" rows="4" placeholder="📢 Notice 1 &nbsp;|&nbsp; Notice 2..."></textarea>
+            </div>
+            <button class="adm-btn adm-ok" onclick="saveTicker()">💾 Update Ticker</button>
+          </div>
+        </div>
+      </div>
+      <!-- PAYMENT TAB -->
+      <div class="adm-tab" id="t-pay">
+        <div class="adm-sec-t"><span>💳</span>Payment &amp; QR</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>💳 UPI &amp; QR Settings</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fg"><label>UPI ID</label><input id="py-upi" placeholder="yourname@upi"/></div>
+            <div class="adm-fg"><label>Display Name</label><input id="py-nm" placeholder="Aman Kumar"/></div>
+            <div class="adm-fg"><label>Upload QR Image</label>
+              <input type="file" id="py-qr-file" accept="image/*" style="padding:8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);width:100%"/>
+              <small id="qr-status" style="color:var(--text-light);margin-top:4px;display:block">No QR uploaded yet</small>
+            </div>
+            <button class="adm-btn adm-pri" onclick="savePayment()">💾 Save Payment</button>
+          </div>
+        </div>
+      </div>
+      <!-- CONTACT TAB -->
+      <div class="adm-tab" id="t-ct">
+        <div class="adm-sec-t"><span>📞</span>Contact Info</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>📞 Update Contact</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fgrid">
+              <div class="adm-fg"><label>Owner Name</label><input id="ct-nm" placeholder="Aman Kumar"/></div>
+              <div class="adm-fg"><label>Phone</label><input id="ct-ph" placeholder="7697800802"/></div>
+              <div class="adm-fg"><label>Email</label><input type="email" id="ct-em" placeholder="email@gmail.com"/></div>
+              <div class="adm-fg"><label>WhatsApp Number</label><input id="ct-wa" placeholder="917697800802"/></div>
+              <div class="adm-fg adm-full"><label>Address</label><input id="ct-addr" placeholder="Batang, Raipur, CG 491111"/></div>
+              <div class="adm-fg"><label>Office Timing</label><input id="ct-ot" placeholder="Mon–Sat: 9AM–6PM"/></div>
+            </div>
+            <button class="adm-btn adm-pri" onclick="saveContact()">💾 Save Contact</button>
+          </div>
+        </div>
+      </div>
+      <!-- SETTINGS TAB -->
+      <div class="adm-tab" id="t-set">
+        <div class="adm-sec-t"><span>🔐</span>Settings</div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>🔐 Change Password</h4></div>
+          <div class="adm-c-bd">
+            <div class="adm-fg"><label>Current Password</label><input type="password" id="sp-cur" placeholder="Current password"/></div>
+            <div class="adm-fg"><label>New Password</label><input type="password" id="sp-new" placeholder="New password (min 4)"/></div>
+            <div class="adm-fg"><label>Confirm Password</label><input type="password" id="sp-cnf" placeholder="Confirm password"/></div>
+            <button class="adm-btn adm-warn" onclick="changePass()">🔐 Change Password</button>
+          </div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-c-hd"><h4>🗄️ Data Management</h4></div>
+          <div class="adm-c-bd" style="flex-direction:row;flex-wrap:wrap;gap:8px">
+            <button class="adm-btn adm-gh" onclick="exportData()">📤 Export JSON</button>
+            <button class="adm-btn adm-del" onclick="clearData()">🗑️ Reset All Data</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
