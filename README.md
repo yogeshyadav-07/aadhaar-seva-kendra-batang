@@ -5,7 +5,7 @@ Chhattisgarh — built to help a local CSC operator showcase government
 services, publish notices, and share downloadable forms/documents online,
 with a fully working admin panel to manage everything in real time.
 
-**Live site:** _add your deployed URL here_
+**Live site:** https://aadhaar-seva-kendra-batang.vercel.app/
 
 ---
 
